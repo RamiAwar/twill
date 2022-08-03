@@ -21,8 +21,8 @@ class RedisBackend(SessionBackend):
             url (str, optional): Redis URL. Defaults to None.
             connection (aioredis.Redis, optional): aioredis connection. Defaults to None.
             serializer (Serializer, optional): Object serializer. Defaults to None.
-            redis_key_func (typing.Callable[[str], str], optional): Customize redis key name. Example `lambda x: "session:" + x`. Defaults to None.
-            expire (int, optional): Key expiry in seconds. Redis will auto delete the session after specified time. Defaults to None.
+            redis_key_func (typing.Callable[[str], str], optional): Customize redis key name. Defaults to None.
+            expire (int, optional): Key expiry in seconds. Defaults to None.
         """
 
         if not (url or connection):

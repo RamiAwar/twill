@@ -1,1 +1,5 @@
-<h1 class="text-3xl font-bold underline">Hello World!</h1>
+<script>
+	import Navbar from '$lib/Navbar.svelte';
+</script>
+
+<Navbar />
