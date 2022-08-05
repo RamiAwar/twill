@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 
 class UserSession(BaseModel):
-    username: str
+    email: str
 
 
 unauthorized_error = HTTPException(

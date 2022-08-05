@@ -1,6 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
+from sqlmodel import Field, SQLModel
 
 
 class User(BaseModel):
@@ -10,5 +11,13 @@ class User(BaseModel):
     disabled: Optional[bool] = None
 
 
-class UserInDB(User):
-    hashed_password: str
+class UserDB(SQLModel):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str
+    email: str
+    twitter_handle: str
+    twitter_user_id: str
+    twitter_followers_count: int
+    twitter_verified: bool
+    twitter_suspended: bool
+    profile_image_url: str

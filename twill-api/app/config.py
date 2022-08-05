@@ -23,5 +23,13 @@ class AuthenticationSettings(BaseSettings):
     jwt_refresh_expiration_delta: int = 86400
 
 
+class PostgresSettings(BaseSettings):
+    postgres_host: str = "localhost"
+    postgres_port: int = 5432
+    postgres_user: str = "twillapi"
+    postgres_password: str
+    postgres_database: str = "postgres"
+
+
 twitter_api_settings = TwitterAPISettings()
 authentication_settings = AuthenticationSettings()

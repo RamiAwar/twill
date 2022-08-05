@@ -3,7 +3,7 @@ from typing import Optional
 
 from app.config import authentication_settings
 from app.model.security import UserSession
-from app.model.user import User, UserInDB
+from app.model.user import User, UserDB
 from app.service.deps import auth, unauthorized_error
 from fastapi import Depends, HTTPException
 from jose import JWTError, jwt
@@ -42,10 +42,11 @@ def hash_password(password):
     return pwd_context.hash(password)
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
+def get_user(email: str):
+
+    return UserDB(
+        email="rami.awar.ra@gmail.com", name="Rami Awar", twitter_handle="@iamramiawar"
+    )
 
 
 def authenticate_user(fake_db, username: str, password: str):
@@ -68,6 +69,10 @@ async def get_current_user(session: UserSession = Depends(auth)):
         raise unauthorized_error
 
     return user
+
+
+async def get_current_user(session: UserSession = Depends(auth)):
+    user = get_user(session.email)
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
