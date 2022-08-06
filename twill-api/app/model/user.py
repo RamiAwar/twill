@@ -11,13 +11,21 @@ class User(BaseModel):
     disabled: Optional[bool] = None
 
 
-class UserDB(SQLModel):
+class UserDB(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     name: str
-    email: str
+    email: str = Field()
     twitter_handle: str
     twitter_user_id: str
     twitter_followers_count: int
     twitter_verified: bool
     twitter_suspended: bool
     profile_image_url: str
+
+
+class UserOut(BaseModel):
+    id: int
+    name: str
+    profile_image_url: str
+    twitter_handle: str
+    twitter_followers_count: int

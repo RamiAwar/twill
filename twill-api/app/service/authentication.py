@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 from typing import Optional
 
-from app.config import authentication_settings
 from app.model.security import UserSession
 from app.model.user import User, UserDB
 from app.service.deps import auth, unauthorized_error

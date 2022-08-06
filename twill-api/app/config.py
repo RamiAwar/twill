@@ -1,6 +1,7 @@
-from enum import Enum
-
 from pydantic import BaseSettings, Field
+
+# TODO: Replace with library
+from app.service.session import RedisBackend
 
 
 class TwitterAPISettings(BaseSettings):
@@ -10,17 +11,17 @@ class TwitterAPISettings(BaseSettings):
     access_token_secret: str = Field(env="token_secret")
 
 
-class JWTAlgorithm(str, Enum):
-    HS256 = "HS256"
-    RS256 = "RS256"
-    ES256 = "ES256"
+# class JWTAlgorithm(str, Enum):
+#     HS256 = "HS256"
+#     RS256 = "RS256"
+#     ES256 = "ES256"
 
 
-class AuthenticationSettings(BaseSettings):
-    jwt_secret: str
-    jwt_algorithm: JWTAlgorithm = JWTAlgorithm.HS256
-    jwt_expiration_minutes: int = 30
-    jwt_refresh_expiration_delta: int = 86400
+# class AuthenticationSettings(BaseSettings):
+#     jwt_secret: str
+#     jwt_algorithm: JWTAlgorithm = JWTAlgorithm.HS256
+#     jwt_expiration_minutes: int = 30
+#     jwt_refresh_expiration_delta: int = 86400
 
 
 class PostgresSettings(BaseSettings):
@@ -32,4 +33,11 @@ class PostgresSettings(BaseSettings):
 
 
 twitter_api_settings = TwitterAPISettings()
-authentication_settings = AuthenticationSettings()
+postgres_settings = PostgresSettings()
+# authentication_settings = AuthenticationSettings()
+
+session_backend = RedisBackend(
+    "redis://localhost",
+    redis_key_func=lambda x: "session:" + x,
+    expire=60 * 60 * 24 * 7,
+)
