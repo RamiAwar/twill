@@ -11,7 +11,6 @@
 
 	onMount(async () => {
 		if (user) {
-			console.log('going to dashboard');
 			// Set user_id here to refresh session store
 			$session.user_id = user.id;
 			goto('/');
