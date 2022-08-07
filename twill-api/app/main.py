@@ -128,10 +128,11 @@ async def verifier_login(
     )
 
     with Session(engine) as session:
-        res = session.exec(select(UserDB).where(UserDB.email == user.email)).all()
-        if len(res) > 0:
+        res = session.exec(select(UserDB).where(UserDB.email == user.email)).first()
+
+        if res:
             # User already exists, only update fields
-            user_db = res[0]
+            user_db = res
             user_db.name = user.name
             user_db.email = user.email
             user_db.twitter_handle = user.screen_name
