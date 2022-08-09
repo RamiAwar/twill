@@ -7,7 +7,13 @@ from starsessions import SessionMiddleware
 from tweepy.asynchronous import AsyncClient
 
 from app import model
-from app.config import logger, postgres_settings, session_backend, twitter_api_settings
+from app.config import (
+    logger,
+    postgres_settings,
+    redis_settings,
+    session_backend,
+    twitter_api_settings,
+)
 from app.model.user import (
     UserDB,
     UserOauthResponse,
@@ -21,7 +27,7 @@ app = FastAPI()
 
 
 engine = create_engine(
-    f"postgresql://twillapi:{postgres_settings.postgres_password}@localhost:5432/postgres",
+    postgres_settings.postgres_url,
     echo=True,
 )
 
@@ -30,7 +36,6 @@ SQLModel.metadata.create_all(engine)
 app.add_middleware(
     SessionMiddleware,
     backend=session_backend,
-    secret_key="12aesj09290ale",
     autoload=True,
 )
 
@@ -39,7 +44,7 @@ app.add_middleware(
 async def startup():
     # Health check redis
     try:
-        redis = aioredis.from_url("redis://localhost")
+        redis = aioredis.from_url(redis_settings.redis_url)
         async with redis.client() as conn:
             await conn.set("health", "1")
     except aioredis.ConnectionError:

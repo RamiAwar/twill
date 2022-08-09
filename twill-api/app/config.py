@@ -26,15 +26,17 @@ class TwitterAPISettings(BaseSettings):
 
 
 class PostgresSettings(BaseSettings):
-    postgres_host: str = "localhost"
-    postgres_port: int = 5432
-    postgres_user: str = "twillapi"
-    postgres_password: str
-    postgres_database: str = "postgres"
+    postgres_url: str
+
+
+class RedisSettings(BaseSettings):
+    redis_url: str
 
 
 twitter_api_settings = TwitterAPISettings()
 postgres_settings = PostgresSettings()
+redis_settings = RedisSettings()
+
 # authentication_settings = AuthenticationSettings()
 
 session_backend = RedisBackend(
