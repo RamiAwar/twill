@@ -1,13 +1,7 @@
-from datetime import datetime, timedelta
-from typing import Optional
-
-from app.model.security import UserSession
-from app.model.user import User, UserDB
+from app.model.user import User, UserDB, UserSession
 from app.service.deps import auth, unauthorized_error
 from fastapi import Depends, HTTPException
-from jose import JWTError, jwt
 from passlib.context import CryptContext
-from pydantic import ValidationError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

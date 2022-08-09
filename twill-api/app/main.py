@@ -1,16 +1,21 @@
-import datetime
-
 import aioredis
 import tweepy
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
 from sqlmodel import Session, SQLModel, create_engine, select
 from starsessions import SessionMiddleware
+from tweepy.asynchronous import AsyncClient
 
 from app import model
-from app.config import postgres_settings, session_backend, twitter_api_settings
-from app.model.user import User, UserDB, UserOut
-from app.service.authentication import get_current_active_user
+from app.config import logger, postgres_settings, session_backend, twitter_api_settings
+from app.model.user import (
+    UserDB,
+    UserOauthResponse,
+    UserOut,
+    UserPublicMetrics,
+    UserSession,
+)
+from app.service.deps import auth
 
 app = FastAPI()
 
@@ -59,9 +64,36 @@ def get_twitter_oauth_handler():
     )
 
 
+def get_twitter_oauth_handler_user(session: UserSession):
+    return tweepy.OAuth1UserHandler(
+        twitter_api_settings.consumer_key,
+        twitter_api_settings.consumer_secret,
+        access_token=session.access_token,
+        access_token_secret=session.access_token_secret,
+    )
+
+
 @app.get("/twitter")
 async def twitter(request: Request):
     oauth1_user_handler = get_twitter_oauth_handler()
+    url = oauth1_user_handler.get_authorization_url(signin_with_twitter=True)
+
+    # Save request token for verification
+    oauth_token = url.split("=")[1]
+    request.session["twitter_request_token"] = {
+        "oauth_token": oauth_token,
+        "oauth_token_secret": oauth1_user_handler.request_token["oauth_token_secret"],
+    }
+    return {"redirect_url": url}
+
+
+@app.get("/oauth/twitter/dev")
+async def twitter_dev(request: Request):
+    oauth1_user_handler = tweepy.OAuth1UserHandler(
+        twitter_api_settings.consumer_key,
+        twitter_api_settings.consumer_secret,
+        callback="http://localhost:8000/oauth",
+    )
     url = oauth1_user_handler.get_authorization_url(signin_with_twitter=True)
 
     # Save request token for verification
@@ -127,6 +159,7 @@ async def verifier_login(
         profile_image_url=user.profile_image_url,
     )
 
+    new_user = False
     with Session(engine) as session:
         res = session.exec(select(UserDB).where(UserDB.email == user.email)).first()
 
@@ -141,13 +174,21 @@ async def verifier_login(
             user_db.twitter_verified = user.verified
             user_db.twitter_suspended = user.suspended
             user_db.profile_image_url = user.profile_image_url
+        else:
+            new_user = True
 
         session.add(user_db)
         session.commit()
         session.refresh(user_db)  # Fetch new id if any
 
+    # Save user in session
+    request.session["email"] = user.email
+    request.session["user_id"] = user_db.id
+    request.session["twitter_user_id"] = user_db.twitter_user_id
+
     response.set_cookie("user_id", str(user_db.id))
-    return UserOut(**user_db.dict())
+
+    return UserOauthResponse(new_user=new_user, user=UserOut(**user_db.dict()))
 
 
 @app.post("/logout")
@@ -163,15 +204,33 @@ async def main(request: Request):
     return request.session
 
 
-@app.get("/profile")
-async def get_user_profile(current_user: User = Depends(get_current_active_user)):
-    return current_user
+@app.get("/twitter/stats")
+async def get_user_profile(session: UserSession = Depends(auth)):
+    tweepy_client = AsyncClient(
+        consumer_key=twitter_api_settings.consumer_key,
+        consumer_secret=twitter_api_settings.consumer_secret,
+        access_token=session.access_token,
+        access_token_secret=session.access_token_secret,
+    )
+
+    response = await tweepy_client.get_user(
+        id=session.twitter_user_id, user_fields=["public_metrics"], user_auth=True
+    )
+
+    if response.errors:
+        logger.error(
+            f"error encountered fetching twitter user data: \n{response.errors}"
+        )
+        return HTTPException(500, "Internal error fetching twitter data")
+
+    user_metrics = response.data
+    user_metrics = UserPublicMetrics(**user_metrics["public_metrics"])
+    return user_metrics.dict()
 
 
-@app.get("/set")
-async def set_time(request: Request):
-    request.session["date"] = datetime.datetime.now().isoformat()
-    return "success"
+@app.get("/session")
+async def get_session(request: Request):
+    return request.session
 
 
 # x = User(

@@ -66,5 +66,8 @@ class RedisBackend(SessionBackend):
         await self._connection.delete(self.get_redis_key(session_id))
 
     async def exists(self, session_id: str) -> bool:
+        if session_id is None:
+            return False
+
         result = await self._connection.exists(self.get_redis_key(session_id))
         return result > 0

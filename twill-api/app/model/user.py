@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -13,6 +14,7 @@ class User(BaseModel):
 
 class UserDB(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     name: str
     email: str = Field()
     twitter_handle: str
@@ -29,3 +31,25 @@ class UserOut(BaseModel):
     profile_image_url: str
     twitter_handle: str
     twitter_followers_count: int
+
+
+class UserOauthResponse(BaseModel):
+    new_user: bool
+    user: UserOut
+
+
+class UserSession(BaseModel):
+    email: str
+    user_id: int
+    access_token: str
+    access_token_secret: str
+    twitter_user_id: str
+
+
+class UserPublicMetrics(BaseModel):
+    followers_count: Optional[int]
+    following_count: Optional[int]
+    tweet_count: Optional[int]
+    listed_count: Optional[int] = Field(
+        description="Number of lists the user is a member of"
+    )
