@@ -1,16 +1,17 @@
 <script>
 	import LoginButton from '$lib/LoginButton.svelte';
 	import { page } from '$app/stores';
-
+	import { slide } from 'svelte/transition';
 	import ProfileMenu from '$lib/ProfileMenu.svelte';
 	import { session } from '$app/stores';
+	import { cubicInOut } from 'svelte/easing';
 
 	// Toggle mobile menu
-	let is_menu_open = false;
+	let is_mobile_menu_open = false;
 	let showProfileDropdown = false;
 
-	const toggleMenuDropdown = () => {
-		is_menu_open = !is_menu_open;
+	const toggleMobileMenuDropdown = () => {
+		is_mobile_menu_open = !is_mobile_menu_open;
 	};
 
 	$: pageName = $page.url.pathname.substring($page.url.pathname.lastIndexOf('/') + 1);
@@ -26,7 +27,7 @@
 					class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-500"
 					aria-controls="mobile-menu"
 					aria-expanded="false"
-					on:click={toggleMenuDropdown}
+					on:click={toggleMobileMenuDropdown}
 				>
 					<span class="sr-only">Open main menu</span>
 					<!--
@@ -36,8 +37,8 @@
                     -->
 					<svg
 						class="h-6 w-6"
-						class:block={!is_menu_open}
-						class:hidden={is_menu_open}
+						class:block={!is_mobile_menu_open}
+						class:hidden={is_mobile_menu_open}
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
@@ -54,8 +55,8 @@
                     -->
 					<svg
 						class="h-6 w-6"
-						class:hidden={!is_menu_open}
-						class:block={is_menu_open}
+						class:hidden={!is_mobile_menu_open}
+						class:block={is_mobile_menu_open}
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
@@ -69,7 +70,7 @@
 			</div>
 
 			<div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
-				<a class="flex-shrink-0 flex items-center" href="/dashboard">
+				<a class="flex-shrink-0 flex items-center" href="/">
 					<img class="block lg:hidden h-12 w-auto" src="logo.png" alt="Workflow" />
 					<img class="hidden lg:block h-12 w-auto" src="logo.png" alt="Workflow" />
 				</a>
@@ -106,29 +107,35 @@
 	</div>
 
 	<!-- Mobile menu, show/hide based on menu state. -->
-	<div class="sm:hidden" class:hidden={!is_menu_open} id="mobile-menu">
-		<div class="pt-2 pb-4 space-y-1">
-			<!-- Current: "bg-pink-50 border-pink-500 text-pink-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
-			<a
-				href="#"
-				class="bg-pink-50 border-pink-500 text-pink-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
-				>Dashboard</a
-			>
-			<a
-				href="#"
-				class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
-				>Team</a
-			>
-			<a
-				href="#"
-				class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
-				>Projects</a
-			>
-			<a
-				href="#"
-				class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
-				>Calendar</a
-			>
+	{#if is_mobile_menu_open}
+		<div
+			class="sm:hidden"
+			id="mobile-menu"
+			transition:slide={{ y: -100, duration: 200, easing: cubicInOut }}
+		>
+			<div class="pt-2 pb-4 space-y-1">
+				<!-- Current: "bg-pink-50 border-pink-500 text-pink-700", Default: "border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700" -->
+				<a
+					href="#"
+					class="bg-pink-50 border-pink-500 text-pink-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+					>Dashboard</a
+				>
+				<a
+					href="#"
+					class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+					>Team</a
+				>
+				<a
+					href="#"
+					class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+					>Projects</a
+				>
+				<a
+					href="#"
+					class="border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 block pl-3 pr-4 py-2 border-l-4 text-base font-medium"
+					>Calendar</a
+				>
+			</div>
 		</div>
-	</div>
+	{/if}
 </nav>
