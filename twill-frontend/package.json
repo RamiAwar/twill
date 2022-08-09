@@ -12,7 +12,6 @@
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
 	"devDependencies": {
-		"@fontsource/merriweather": "^4.5.12",
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@types/chart.js": "^2.9.37",

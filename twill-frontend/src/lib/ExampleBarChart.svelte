@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
-	import '@fontsource/merriweather';
 
 	import { Chart, registerables } from 'chart.js';
 
@@ -58,7 +57,33 @@
 			new Chart(barChartElement, {
 				type: 'bar',
 				data: chartData,
+				plugins: [
+					// {
+					// 	id: 'custom_canvas_background_colour',
+					// 	beforeDraw: (chart: Chart) => {
+					// 		const ctx = chart.canvas.getContext('2d');
+					// 		if (ctx) {
+					// 			ctx.clearRect(0, 0, 400, 400);
+					// 			for (var i = 0; i < 600; i++) {
+					// 				var x = Math.floor(Math.random() * 300);
+					// 				var y = Math.floor(Math.random() * 300);
+					// 				var radius = Math.floor(Math.random() * 20);
+					// 				var r = Math.floor(Math.random() * 255);
+					// 				var g = Math.floor(Math.random() * 255);
+					// 				var b = Math.floor(Math.random() * 255);
+					// 				ctx.beginPath();
+					// 				ctx.arc(x, y, radius, Math.PI * 2, 0, false);
+					// 				ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',1)';
+					// 				ctx.fill();
+					// 				ctx.closePath();
+					// 			}
+					// 		}
+					// 	}
+					// }
+				],
 				options: {
+					maintainAspectRatio: true,
+					responsive: true,
 					plugins: {
 						legend: {
 							display: false
@@ -83,7 +108,7 @@
 								display: true,
 								text: 'Satisfaction (%)',
 								color: 'hsl(43 100% 52% )',
-								font: { size: 24, family: 'Merriweather' }
+								font: { size: 24, family: 'sans-serif' }
 							}
 						}
 					}
@@ -93,4 +118,4 @@
 	});
 </script>
 
-<canvas bind:this={barChartElement} />
+<canvas bind:this={barChartElement} style="position: relative; max-height: 50vh;" />
