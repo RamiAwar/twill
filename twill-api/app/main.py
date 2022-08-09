@@ -228,6 +228,24 @@ async def get_user_profile(session: UserSession = Depends(auth)):
     return user_metrics.dict()
 
 
+@app.get("/twitter/tweets")
+async def get_user_tweets(session: UserSession = Depends(auth)):
+    tweepy_client = AsyncClient(
+        consumer_key=twitter_api_settings.consumer_key,
+        consumer_secret=twitter_api_settings.consumer_secret,
+        access_token=session.access_token,
+        access_token_secret=session.access_token_secret,
+    )
+
+    response = await tweepy_client.get_users_tweets(
+        session.twitter_user_id,
+        tweet_fields=["organic_metrics"],
+        user_auth=True,
+    )
+
+    return response.data
+
+
 @app.get("/session")
 async def get_session(request: Request):
     return request.session
