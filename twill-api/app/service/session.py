@@ -37,13 +37,20 @@ class RedisBackend(SessionBackend):
         self._redis_key_func = redis_key_func
         self.expire = expire
 
+    # Replace with starsessions soon
     def get_redis_key(self, session_id: str) -> str:
+        if session_id is None:
+            session_id = ""
+
         if self._redis_key_func:
             return self._redis_key_func(session_id)
         else:
             return session_id
 
     async def read(self, session_id: str) -> typing.Dict:
+        if session_id is None:
+            return {}
+
         key = self.get_redis_key(session_id)
         value = await self._connection.get(key)
 
