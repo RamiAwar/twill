@@ -40,7 +40,7 @@ redis_settings = RedisSettings()
 # authentication_settings = AuthenticationSettings()
 
 session_backend = RedisBackend(
-    "redis://localhost",
+    redis_settings.redis_url,
     redis_key_func=lambda x: "session:" + x,
     expire=60 * 60 * 24 * 7,
 )
