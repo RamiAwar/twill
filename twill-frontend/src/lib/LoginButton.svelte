@@ -1,9 +1,6 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { session } from '$app/stores';
-
-	const dispatch = createEventDispatcher();
 
 	async function login() {
 		// Get twitter redirect URL
@@ -16,6 +13,7 @@
 				goto(data.redirect_url);
 			} else {
 				// TODO: Show error
+				console.log('error getting twitter redirect');
 			}
 		}
 	}

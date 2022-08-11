@@ -14,12 +14,14 @@ export function respond(body, prefix) {
 
 	if (prefix) {
 		return {
+			status: 200,
 			headers: headers,
 			body: { [prefix]: body }
 		};
 	}
 
 	return {
+		status: 200,
 		headers: headers,
 		body
 	};

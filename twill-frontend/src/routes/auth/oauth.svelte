@@ -1,16 +1,3 @@
-<script context="module">
-	export function load({ session }) {
-		if (session.user_id) {
-			return {
-				status: 302,
-				redirect: `/`
-			};
-		}
-
-		return {};
-	}
-</script>
-
 <script>
 	import { userStore } from '$lib/store.js';
 	import { goto } from '$app/navigation';
@@ -35,6 +22,7 @@
 			}
 		} else {
 			// TODO: Show error
+			console.log('error - user undefined');
 		}
 	});
 </script>
