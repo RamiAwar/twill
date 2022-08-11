@@ -1,9 +1,10 @@
 import * as cookie from 'cookie';
+import { env } from '$lib/config';
 
 const getType = (obj) => Object.prototype.toString.call(obj).slice(8, -1);
 const isObject = (obj) => getType(obj) === 'Object';
 
-const base = 'http://localhost:8000';
+const base = env.basePath;
 
 async function send({ method, path, data, session }) {
 	const opts = { method, headers: {} };
