@@ -7,20 +7,10 @@ from starsessions import SessionMiddleware
 from tweepy.asynchronous import AsyncClient
 
 from app import model
-from app.config import (
-    logger,
-    postgres_settings,
-    redis_settings,
-    session_backend,
-    twitter_api_settings,
-)
-from app.model.user import (
-    UserDB,
-    UserOauthResponse,
-    UserOut,
-    UserPublicMetrics,
-    UserSession,
-)
+from app.config import (logger, postgres_settings, redis_settings,
+                        session_backend, twitter_api_settings)
+from app.model.user import (UserDB, UserOauthResponse, UserOut,
+                            UserPublicMetrics, UserSession)
 from app.service.deps import auth
 
 app = FastAPI()
@@ -244,7 +234,7 @@ async def get_user_tweets(session: UserSession = Depends(auth)):
 
     response = await tweepy_client.get_users_tweets(
         session.twitter_user_id,
-        tweet_fields=["organic_metrics"],
+        tweet_fields=["organic_metrics", "context_annotations"],
         user_auth=True,
     )
 
