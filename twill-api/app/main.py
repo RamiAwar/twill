@@ -65,7 +65,7 @@ def get_twitter_oauth_handler():
     return tweepy.OAuth1UserHandler(
         twitter_api_settings.consumer_key,
         twitter_api_settings.consumer_secret,
-        callback="http://localhost:5173/auth/oauth",
+        callback=twitter_api_settings.callback_url,
     )
 
 

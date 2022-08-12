@@ -9,6 +9,9 @@ class TwitterAPISettings(BaseSettings):
     consumer_secret: str
     access_token: str
     access_token_secret: str = Field(env="token_secret")
+    callback_url: str = Field(
+        env="twitter_callback_url", default="http://localhost:5173/auth/oauth"
+    )
 
 
 # class JWTAlgorithm(str, Enum):
@@ -35,6 +38,7 @@ class RedisSettings(BaseSettings):
 twitter_api_settings = TwitterAPISettings()
 postgres_settings = PostgresSettings()
 redis_settings = RedisSettings()
+
 
 # authentication_settings = AuthenticationSettings()
 
