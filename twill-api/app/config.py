@@ -1,8 +1,7 @@
 import structlog
 from pydantic import BaseSettings, Field
 
-# TODO: Replace with library
-from app.service.session import RedisBackend
+from app.service.starsessions.backends.redis import RedisBackend
 
 
 class TwitterAPISettings(BaseSettings):

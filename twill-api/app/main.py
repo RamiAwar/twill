@@ -3,15 +3,25 @@ import tweepy
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
 from sqlmodel import Session, SQLModel, create_engine, select
-from starsessions import SessionMiddleware
 from tweepy.asynchronous import AsyncClient
 
 from app import model
-from app.config import (logger, postgres_settings, redis_settings,
-                        session_backend, twitter_api_settings)
-from app.model.user import (UserDB, UserOauthResponse, UserOut,
-                            UserPublicMetrics, UserSession)
+from app.config import (
+    logger,
+    postgres_settings,
+    redis_settings,
+    session_backend,
+    twitter_api_settings,
+)
+from app.model.user import (
+    UserDB,
+    UserOauthResponse,
+    UserOut,
+    UserPublicMetrics,
+    UserSession,
+)
 from app.service.deps import auth
+from app.service.starsessions import SessionMiddleware
 
 app = FastAPI()
 
@@ -243,6 +253,8 @@ async def get_user_tweets(session: UserSession = Depends(auth)):
 
 @app.get("/session")
 async def get_session(request: Request):
+    request.session["t"] = "t"
+    request.session["t"]
     return request.session
 
 
