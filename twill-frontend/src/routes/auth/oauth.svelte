@@ -6,13 +6,11 @@
 
 	export let user;
 
-	console.log('received user: ', user);
-	userStore.set(user.user);
-
 	onMount(async () => {
 		if (user) {
 			// Set user_id here to refresh session store
 			$session.user_id = user.user.id;
+			userStore.set(user.user);
 
 			// Check if needs onboarding
 			if (user.new_user) {
@@ -22,7 +20,6 @@
 			}
 		} else {
 			// TODO: Show error
-			console.log('error - user undefined');
 		}
 	});
 </script>
