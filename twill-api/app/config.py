@@ -21,19 +21,6 @@ class AppSettings(BaseSettings):
     commit_hash: Optional[str] = Field(env="RENDER_GIT_COMMIT", default=None)
 
 
-# class JWTAlgorithm(str, Enum):
-#     HS256 = "HS256"
-#     RS256 = "RS256"
-#     ES256 = "ES256"
-
-
-# class AuthenticationSettings(BaseSettings):
-#     jwt_secret: str
-#     jwt_algorithm: JWTAlgorithm = JWTAlgorithm.HS256
-#     jwt_expiration_minutes: int = 30
-#     jwt_refresh_expiration_delta: int = 86400
-
-
 class PostgresSettings(BaseSettings):
     postgres_url: str
 
