@@ -1,12 +1,16 @@
 import aioredis
+import sentry_sdk
 import tweepy
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 from sqlmodel import Session, SQLModel, create_engine, select
 from tweepy.asynchronous import AsyncClient
 
 from app import model
 from app.config import (
+    app_settings,
     logger,
     postgres_settings,
     redis_settings,
@@ -22,6 +26,18 @@ from app.model.user import (
 )
 from app.service.deps import auth
 from app.service.starsessions import SessionMiddleware
+
+sentry_sdk.init(
+    dsn="https://709b566d47ee4311ada4f6340088897a@o1359248.ingest.sentry.io/6646638",
+    integrations=[
+        StarletteIntegration(),
+        FastApiIntegration(),
+    ],
+    release=app_settings.commit_hash,
+    traces_sample_rate=1.0,
+    environment=app_settings.environment,
+)
+
 
 app = FastAPI()
 
@@ -119,7 +135,7 @@ async def verifier_login(
         != oauth_token
     ):
         request.session.clear()
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Error authenticating with Twitter",
         )
@@ -145,9 +161,11 @@ async def verifier_login(
 
     api = tweepy.API(auth)
     user: tweepy.User = api.verify_credentials(include_email=True)
+
+    # TODO: Handle users with no email - Get email form
     if not user.email:
         request.session.clear()
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Error authenticating with Twitter - Email privileges needed",
         )
@@ -226,7 +244,7 @@ async def get_user_profile(session: UserSession = Depends(auth)):
         logger.error(
             f"error encountered fetching twitter user data: \n{response.errors}"
         )
-        return HTTPException(500, "Internal error fetching twitter data")
+        raise HTTPException(500, "Internal error fetching twitter data")
 
     user_metrics = response.data
     user_metrics = UserPublicMetrics(**user_metrics["public_metrics"])
@@ -249,13 +267,6 @@ async def get_user_tweets(session: UserSession = Depends(auth)):
     )
 
     return response.data
-
-
-@app.get("/session")
-async def get_session(request: Request):
-    request.session["t"] = "t"
-    request.session["t"]
-    return request.session
 
 
 # x = User(

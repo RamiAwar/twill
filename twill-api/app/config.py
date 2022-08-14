@@ -1,3 +1,5 @@
+from typing import Optional
+
 import structlog
 from pydantic import BaseSettings, Field
 
@@ -12,6 +14,11 @@ class TwitterAPISettings(BaseSettings):
     callback_url: str = Field(
         env="twitter_callback_url", default="http://localhost:5173/auth/oauth"
     )
+
+
+class AppSettings(BaseSettings):
+    environment: str = Field(env="environment", default="local")
+    commit_hash: Optional[str] = Field(env="RENDER_GIT_COMMIT", default=None)
 
 
 # class JWTAlgorithm(str, Enum):
@@ -38,6 +45,7 @@ class RedisSettings(BaseSettings):
 twitter_api_settings = TwitterAPISettings()
 postgres_settings = PostgresSettings()
 redis_settings = RedisSettings()
+app_settings = AppSettings()
 
 
 # authentication_settings = AuthenticationSettings()
