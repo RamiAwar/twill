@@ -71,8 +71,8 @@
 
 			<div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
 				<a class="flex-shrink-0 flex items-center" href="/">
-					<img class="block lg:hidden h-12 w-auto" src="logo.png" alt="Workflow" />
-					<img class="hidden lg:block h-12 w-auto" src="logo.png" alt="Workflow" />
+					<img class="block lg:hidden h-12 w-auto" src="/logo.png" alt="Workflow" />
+					<img class="hidden lg:block h-12 w-auto" src="/logo.png" alt="Workflow" />
 				</a>
 
 				<!-- Nav links -->
