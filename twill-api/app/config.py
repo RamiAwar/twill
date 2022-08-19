@@ -61,4 +61,4 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 
-logger = structlog.get_logger("twill")
+logger: structlog.BoundLogger = structlog.get_logger("twill")

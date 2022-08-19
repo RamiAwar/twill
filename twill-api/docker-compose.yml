@@ -1,0 +1,42 @@
+version: "3.4"
+
+services:
+  redis:
+    image: "redis:latest"
+
+  beat:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    depends_on:
+      - "redis"
+    env_file:
+      - ".env"
+    command: celery -A main:app beat -l INFO
+
+  worker:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    depends_on:
+      - "redis"
+    env_file:
+      - ".env"
+    command: celery -A preziba_tasks.preziba_tasks:app worker -l INFO -Q glucose
+
+  scheduler:
+    build:
+      context: "."
+      dockerfile: Dockerfile
+    depends_on:
+      - "redis"
+    env_file:
+      - ".env"
+    command: celery -A preziba_tasks.preziba_tasks:app worker -l INFO -Q scheduling
+
+  flower:
+    image: mher/flower
+    ports:
+      - "5555:5555"
+    command: --broker=redis://redis:6379
+
