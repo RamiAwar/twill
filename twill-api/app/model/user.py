@@ -1,19 +1,20 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
-from sqlmodel import Field, SQLModel
+from app.model.session import TwitterRequestToken
+from beanie import Document, Indexed
+from pydantic import BaseModel, Field
+from starsessions import Session
 
 
-class User(BaseModel):
-    username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
+class TwitterCredentials(BaseModel):
+    access_token: str
+    access_token_secret: str
+    twitter_user_id: str
+    twitter_request_token: Optional[TwitterRequestToken]
 
 
-class UserDB(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+class User(Document, TwitterCredentials):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     name: str
     email: str = Field()
@@ -26,7 +27,6 @@ class UserDB(SQLModel, table=True):
 
 
 class UserOut(BaseModel):
-    id: int
     name: str
     profile_image_url: str
     twitter_handle: str
@@ -34,16 +34,12 @@ class UserOut(BaseModel):
 
 
 class UserOauthResponse(BaseModel):
-    new_user: bool
     user: UserOut
 
 
-class UserSession(BaseModel):
+class UserSession(TwitterCredentials, Session):
     email: str
-    user_id: int
-    access_token: str
-    access_token_secret: str
-    twitter_user_id: str
+    user_id: str
 
 
 class UserPublicMetrics(BaseModel):

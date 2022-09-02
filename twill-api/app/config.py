@@ -21,8 +21,20 @@ class AppSettings(BaseSettings):
     commit_hash: Optional[str] = Field(env="RENDER_GIT_COMMIT", default=None)
 
 
-class PostgresSettings(BaseSettings):
-    postgres_url: str
+class MongoSettings(BaseSettings):
+    mongo_host: str = "localhost"
+    mongo_port: int = 27017
+    mongo_user: str = ""
+    mongo_pass: str = ""
+    mongo_db: str = "twill"
+
+    @property
+    def dsn(self):
+        url = f"{self.mongo_host}:{self.mongo_port}/{self.mongo_db}"
+        if self.mongo_user:
+            return f"mongodb://{self.mongo_user}:{self.mongo_pass}@{url}"
+        else:
+            return f"mongodb://{url}"
 
 
 class RedisSettings(BaseSettings):
@@ -30,7 +42,7 @@ class RedisSettings(BaseSettings):
 
 
 twitter_api_settings = TwitterAPISettings()
-postgres_settings = PostgresSettings()
+mongo_settings = MongoSettings()
 redis_settings = RedisSettings()
 app_settings = AppSettings()
 

@@ -22,9 +22,13 @@ async-lru = "^1.0.3"
 oauthlib = "^3.2.0"
 alembic = "^1.8.1"
 sentry-sdk = {extras = ["fastapi"], version = "^1.9.4"}
+celery = "^5.2.7"
+celery-singleton = "^0.3.1"
+beanie = "^1.11.9"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
+flower = "^1.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
