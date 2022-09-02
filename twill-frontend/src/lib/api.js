@@ -1,4 +1,3 @@
-import * as cookie from 'cookie';
 import { env } from '$lib/config';
 
 const getType = (obj) => Object.prototype.toString.call(obj).slice(8, -1);
@@ -30,7 +29,7 @@ async function send({ method, path, data, session }) {
 				var resParsed = JSON.parse(body);
 
 				if (resParsed?.status === 'error') {
-					console.log(`API response error from ${base}/${path}: ${body}`);
+					console.log(`API response error from ${base}${path}: ${body}`);
 				}
 
 				if (isObject(resParsed)) {

@@ -9,15 +9,9 @@
 	onMount(async () => {
 		if (user) {
 			// Set user_id here to refresh session store
-			$session.user_id = user.user.id;
-			userStore.set(user.user);
-
-			// Check if needs onboarding
-			if (user.new_user) {
-				goto('/onboarding');
-			} else {
-				goto('/dashboard');
-			}
+			$session.user_id = user.id;
+			userStore.set(user);
+			goto('/dashboard');
 		} else {
 			// TODO: Show error
 		}

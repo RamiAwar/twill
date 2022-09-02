@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional
 
 from app.model.session import TwitterRequestToken
-from beanie import Document, Indexed
+from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 from starsessions import Session
 
@@ -27,6 +27,7 @@ class User(Document, TwitterCredentials):
 
 
 class UserOut(BaseModel):
+    id: PydanticObjectId
     name: str
     profile_image_url: str
     twitter_handle: str
