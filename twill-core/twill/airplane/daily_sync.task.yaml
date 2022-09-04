@@ -1,0 +1,21 @@
+name: Daily Sync
+slug: daily_sync
+python:
+  entrypoint: daily_sync.py
+  envVars:
+    access_token:
+      config: twitter_access_token
+    bearer_token:
+      config: twitter_bearer_token
+    client_id:
+      config: twitter_client_id
+    client_secret:
+      config: twitter_client_secret
+    consumer_key:
+      config: twitter_consumer_key
+    consumer_secret:
+      config: twitter_consumer_secret
+    mongo_dsn:
+      config: mongo_dsn
+    token_secret:
+      config: twitter_access_token_secret
