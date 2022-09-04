@@ -1,27 +1,16 @@
 import aioredis
-import motor.motor_asyncio
 import sentry_sdk
-import tweepy
-from beanie import init_beanie
-from beanie.operators import Set
 from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
-from fastapi.responses import RedirectResponse
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
-from sqlmodel import Session, SQLModel, create_engine, select
 from tweepy.asynchronous import AsyncClient
+from twill.config import logger, twitter_api_settings
+from twill.database.mongo import initialize_beanie
+from twill.model.twitter import Tweet, UserPublicMetrics
 
-from app.config import (
-    app_settings,
-    logger,
-    mongo_settings,
-    redis_settings,
-    session_backend,
-    twitter_api_settings,
-)
-from app.model.tweet import Tweet
-from app.model.user import User, UserPublicMetrics, UserSession
+from app.config import app_settings, redis_settings, session_backend
+from app.model.user import UserSession
 from app.router.twitter_authentication import router as twitter_auth_router
 from app.service.deps import auth
 from app.service.starsessions import SessionMiddleware
@@ -58,10 +47,8 @@ async def startup():
     except aioredis.ConnectionError:
         raise Exception("Redis is not running")
 
-    client = motor.motor_asyncio.AsyncIOMotorClient(mongo_settings.dsn)
-
     # Initialize beanie
-    await init_beanie(client.twill, document_models=[User, Tweet])
+    await initialize_beanie()
 
 
 @app.post("/logout")

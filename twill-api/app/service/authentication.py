@@ -1,11 +1,13 @@
 from typing import Tuple
 
 import tweepy
-from app.config import twitter_api_settings
 from app.model.session import LoginSession
-from app.model.user import User, UserOut, UserSession
+from app.model.user import UserSession
 from beanie.operators import Set
 from fastapi import HTTPException, status
+from twill.config import twitter_api_settings
+from twill.model.user import User
+from twill.service.analytics import update_follow_count_today
 
 
 def get_twitter_oauth_handler():
@@ -87,4 +89,7 @@ async def login_user_with_twitter(
         # Create user
         user = await user.insert()
 
+    # Update follow count
+    # TODO: EVENT
+    await update_follow_count_today(str(user.id), user.twitter_followers_count)
     return user

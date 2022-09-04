@@ -1,13 +1,12 @@
 from typing import Optional
 
-from app.config import logger
-
 # TODO: Refactor errors into error
 from app.model.security import unauthorized_error
 from app.model.session import LoginSession
 from app.model.user import UserSession
 from fastapi import Depends, Request
 from pydantic import ValidationError
+from twill.config import logger
 
 from starsessions import Session
 

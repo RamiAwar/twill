@@ -1,11 +1,11 @@
 import tweepy
-from app.config import twitter_api_settings
 from app.model.session import LoginSession
 from app.model.user import UserOut, UserSession
 from app.service.authentication import get_twitter_access_token, login_user_with_twitter
 from app.service.deps import login
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
+from twill.config import twitter_api_settings
 
 router = APIRouter()
 
@@ -65,6 +65,7 @@ async def verifier_login(
     # Fetch user data and login
     user = await login_user_with_twitter(session, access_token, access_token_secret)
 
+    # TODO: Refactor into function?
     # Save user details in session
     request.session["access_token"] = access_token
     request.session["access_token_secret"] = access_token_secret
