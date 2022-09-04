@@ -10,6 +10,7 @@ from twill.config import TwitterAPISettings, logger
 from twill.database.mongo import initialize_beanie
 from twill.model.twitter import DailyStats, EngagementAggregation, FollowCount, Tweet, UserPublicMetrics
 from twill.model.user import User
+from twill.service.analytics import update_follow_count_today
 
 twitter_api_settings = TwitterAPISettings()
 
@@ -87,21 +88,7 @@ async def calculate_stats(user_id: str):
     user_metrics = UserPublicMetrics(**user_metrics["public_metrics"])
 
     # Update today's follower count
-    today = datetime.combine(datetime.utcnow(), time.min)
-    follow_count = FollowCount(
-        user_id=user_id,
-        date=today,  # Calculate today's date
-        followers_count=user_metrics.followers_count,
-    )
-
-    # Update today's follower count / insert if not exists
-    await FollowCount.find_one(
-        FollowCount.date == follow_count.date,
-        FollowCount.user_id == follow_count.user_id,
-    ).upsert(
-        Set({FollowCount.followers_count: follow_count.followers_count}),
-        on_insert=follow_count,
-    )
+    await update_follow_count_today(user_id, user_metrics.followers_count)
 
     # Update last period's engagement total
     last_period_start = datetime.combine(datetime.utcnow() - timedelta(days=LAST_PERIOD_DAYS), time.min)
