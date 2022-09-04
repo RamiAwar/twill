@@ -14,7 +14,6 @@ async function send({ method, path, data, session }) {
 	}
 
 	if (session) {
-		// console.log('session in pre-send server side: ', session);
 		opts.headers['Cookie'] = `session=${session}`;
 	}
 
