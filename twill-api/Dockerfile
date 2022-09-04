@@ -12,11 +12,11 @@ ENV PATH="/etc/poetry/bin:$PATH"
 RUN curl -sSLfo poetry-install.py https://install.python-poetry.org \
     && python poetry-install.py --version 1.1.12
 
-WORKDIR /app
+COPY twill-core /twill-core
 
-COPY ./poetry.lock ./pyproject.toml ./
+WORKDIR /app
+COPY twill-api/poetry.lock twill-api/pyproject.toml ./
 RUN poetry config virtualenvs.create false && poetry install --no-root
 
-COPY ./app ./app
-
+COPY twill-api/app /app
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
