@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from starsessions import Session
 
 
 class TwitterRequestToken(BaseModel):
@@ -7,5 +6,5 @@ class TwitterRequestToken(BaseModel):
     oauth_token_secret: str
 
 
-class LoginSession(BaseModel, Session):
+class LoginSession(BaseModel):
     twitter_request_token: TwitterRequestToken

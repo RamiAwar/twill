@@ -4,16 +4,16 @@ from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
+from starsessions import SessionAutoloadMiddleware, SessionMiddleware
 from tweepy.asynchronous import AsyncClient
 from twill.config import logger, twitter_api_settings
 from twill.database.mongo import initialize_beanie
 from twill.model.twitter import Tweet, UserPublicMetrics
 
-from app.config import app_settings, redis_settings, session_backend
+from app.config import app_settings, redis_settings, redis_store
 from app.model.user import UserSession
 from app.router.twitter_authentication import router as twitter_auth_router
 from app.service.deps import auth
-from app.service.starsessions import SessionMiddleware
 
 sentry_sdk.init(
     dsn="https://709b566d47ee4311ada4f6340088897a@o1359248.ingest.sentry.io/6646638",
@@ -28,10 +28,11 @@ sentry_sdk.init(
 
 app = FastAPI()
 
+app.add_middleware(SessionAutoloadMiddleware)
 app.add_middleware(
     SessionMiddleware,
-    backend=session_backend,
-    autoload=True,
+    store=redis_store,
+    lifetime=60 * 60 * 24 * 7,  # 1 week
 )
 
 app.include_router(twitter_auth_router, prefix="/twitter", tags=["twitter"])

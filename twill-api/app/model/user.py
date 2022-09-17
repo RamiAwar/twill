@@ -1,6 +1,5 @@
 from beanie import PydanticObjectId
 from pydantic import BaseModel
-from starsessions import Session
 from twill.model.user import TwitterCredentials
 
 
@@ -16,6 +15,6 @@ class UserOauthResponse(BaseModel):
     user: UserOut
 
 
-class UserSession(TwitterCredentials, Session):
+class UserSession(TwitterCredentials):
     email: str
     user_id: str

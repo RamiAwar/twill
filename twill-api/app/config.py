@@ -1,8 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseSettings, Field
-
-from app.service.starsessions.backends.redis import RedisBackend
+from starsessions.stores.redis import RedisStore
 
 
 class AppSettings(BaseSettings):
@@ -20,8 +19,4 @@ app_settings = AppSettings()
 
 # authentication_settings = AuthenticationSettings()
 
-session_backend = RedisBackend(
-    redis_settings.redis_url,
-    redis_key_func=lambda x: "session:" + x,
-    expire=60 * 60 * 24 * 7,
-)
+redis_store = RedisStore(redis_settings.redis_url, prefix="starsession:")

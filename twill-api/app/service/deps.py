@@ -8,10 +8,8 @@ from fastapi import Depends, Request
 from pydantic import ValidationError
 from twill.config import logger
 
-from starsessions import Session
 
-
-async def session(request: Request) -> Session:
+async def session(request: Request):
     session = request.session
     if not session:
         raise unauthorized_error
