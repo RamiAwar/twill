@@ -7,7 +7,9 @@ class TwitterAPISettings(BaseSettings):
     consumer_secret: str
     access_token: str
     access_token_secret: str = Field(env="token_secret")
-    callback_url: str = Field(env="twitter_callback_url", default="http://localhost:5173/auth/oauth")
+    callback_url: str = Field(
+        env="twitter_callback_url", default="http://localhost:3000/oauth"
+    )
 
 
 class MongoSettings(BaseSettings):
