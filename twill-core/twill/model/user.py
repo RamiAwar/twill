@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Optional
 
-from beanie import Document
+from beanie import Document, Indexed
 from pydantic import BaseModel, Field
 
 
@@ -22,3 +22,7 @@ class User(Document, TwitterCredentials):
     twitter_verified: bool
     twitter_suspended: bool
     profile_image_url: str
+
+
+class BetaAccess(Document):
+    email: Indexed(str)

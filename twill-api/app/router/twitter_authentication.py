@@ -6,6 +6,7 @@ from app.service.deps import login
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
 from twill.config import twitter_api_settings
+from twill.model.user import BetaAccess
 
 router = APIRouter()
 
@@ -64,6 +65,15 @@ async def verifier_login(
 
     # Fetch user data and login
     user = await login_user_with_twitter(session, access_token, access_token_secret)
+
+    # Beta access filtering
+    beta_access = await BetaAccess.find_one(BetaAccess.email == user.email)
+    if not beta_access:
+        request.session.clear()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="You do not have beta access to Twill",
+        )
 
     # TODO: Refactor into function?
     # Save user details in session
