@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LockClosedIcon } from '@heroicons/vue/20/solid/index.d'
+import { LockClosedIcon } from '@heroicons/vue/20/solid/index'
 import { LoginRedirect } from '@/models/auth';
 
 import { useUserStore } from '@/stores/user';
