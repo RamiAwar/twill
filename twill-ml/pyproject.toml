@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "twill-ml"
+version = "0.1.0"
+description = ""
+authors = ["meghanabhange <meghanabhange13@gmail.com>"]
+readme = "README.md"
+packages = [{include = "twill_ml"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+structlog = "^22.1.0"
+jupyter = "^1.0.0"
+pandas = "^1.4.4"
+numpy = "^1.23.3"
+tweet-preprocessor = "^0.6.0"
+isort = "^5.10.1"
+black = "^22.8.0"
+nbdev = "^2.3.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
