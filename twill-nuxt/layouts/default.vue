@@ -1,5 +1,7 @@
 <template>
   <div class="h-full w-full">
+
+    <ErrorHandler></ErrorHandler>
     <slot></slot>
   </div>
 </template>
@@ -21,7 +23,7 @@ body {
       background-image:
         linear-gradient(to right, grey 1px, transparent 1px),
         linear-gradient(to bottom, grey 1px, transparent 1px); */
-    @apply h-full w-full bg-gray-200;
+    @apply h-full w-full bg-white;
     /* mask-image: linear-gradient(0deg, #fff, rgba(255, 255, 255, 0.6)); */
   }
 }

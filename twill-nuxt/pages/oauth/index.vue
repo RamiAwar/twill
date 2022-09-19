@@ -15,9 +15,7 @@ const res = await useFetch<UserAuthResponse>('/api/auth/oauth' + suffix,
 
 // Store in user store
 const userStore = useUserStore();
-console.log(res.data.value);
 if (res.data.value) {
-  console.log("storing value in local storage", res.data.value)
   userStore.$patch({ ...res.data.value })
   navigateTo("/")
 } else {

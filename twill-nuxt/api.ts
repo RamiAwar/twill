@@ -35,7 +35,6 @@ async function send(method: string, path: string, data: any, session_id: string)
 
     try {
       const json = JSON.parse(r.data);
-      console.log("json parse: ", json);
       if (json?.status === "error") {
         console.log(`API response error from ${API_URL}${path}: ${r.data}`);
       }
