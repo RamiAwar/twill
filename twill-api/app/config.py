@@ -1,7 +1,6 @@
 from typing import Optional
 
 from pydantic import BaseSettings, Field
-from starsessions.stores.redis import RedisStore
 
 
 class AppSettings(BaseSettings):
@@ -13,10 +12,12 @@ class RedisSettings(BaseSettings):
     redis_url: str
 
 
-redis_settings = RedisSettings()
 app_settings = AppSettings()
 
 
-# authentication_settings = AuthenticationSettings()
+redis_settings = RedisSettings()
 
-redis_store = RedisStore(redis_settings.redis_url, prefix="starsession:")
+# TODO: Enable when need to scale
+from starsessions.stores.redis import RedisStore
+
+# redis_store = RedisStore(redis_settings.redis_url, prefix="starsession:")

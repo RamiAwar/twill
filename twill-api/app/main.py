@@ -4,13 +4,13 @@ from fastapi import Depends, FastAPI, HTTPException, Response, status
 from fastapi.requests import Request
 from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.starlette import StarletteIntegration
-from starsessions import SessionAutoloadMiddleware, SessionMiddleware
+from starsessions import InMemoryStore, SessionAutoloadMiddleware, SessionMiddleware
 from tweepy.asynchronous import AsyncClient
 from twill.config import logger, twitter_api_settings
 from twill.database.mongo import initialize_beanie
 from twill.model.twitter import Tweet, UserPublicMetrics
 
-from app.config import app_settings, redis_settings, redis_store
+from app.config import app_settings
 from app.model.user import UserSession
 from app.router.twitter_authentication import router as twitter_auth_router
 from app.service.deps import auth
@@ -28,10 +28,11 @@ sentry_sdk.init(
 
 app = FastAPI()
 
+store = InMemoryStore()
 app.add_middleware(SessionAutoloadMiddleware)
 app.add_middleware(
     SessionMiddleware,
-    store=redis_store,
+    store=store,
     lifetime=60 * 60 * 24 * 7,  # 1 week
 )
 
@@ -41,12 +42,12 @@ app.include_router(twitter_auth_router, prefix="/twitter", tags=["twitter"])
 @app.on_event("startup")
 async def startup():
     # Health check redis
-    try:
-        redis = aioredis.from_url(redis_settings.redis_url)
-        async with redis.client() as conn:
-            await conn.set("health", "1")
-    except aioredis.ConnectionError:
-        raise Exception("Redis is not running")
+    # try:
+    #     redis = aioredis.from_url(redis_settings.redis_url)
+    #     async with redis.client() as conn:
+    #         await conn.set("health", "1")
+    # except aioredis.ConnectionError:
+    #     raise Exception("Redis is not running")
 
     # Initialize beanie
     await initialize_beanie()

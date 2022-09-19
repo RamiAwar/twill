@@ -11,7 +11,7 @@ const userStore = useUserStore();
 // Get login redirect
 const loginRedirect = async () => {
   const res = await useFetch<LoginRedirect>('/api/auth/login')
-  if (res.error) {
+  if (res.error?.value) {
     // TODO: Handle error here
     console.log(res.error)
     return
