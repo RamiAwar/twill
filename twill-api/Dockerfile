@@ -19,6 +19,6 @@ WORKDIR /
 COPY twill-api/poetry.lock twill-api/pyproject.toml ./
 RUN poetry config virtualenvs.create false && poetry install --no-root
 
-WORKDIR /app
-COPY twill-api/app .
+COPY twill-api/app /app
+WORKDIR /
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
