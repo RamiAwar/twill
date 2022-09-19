@@ -15,9 +15,10 @@ RUN curl -sSLfo poetry-install.py https://install.python-poetry.org \
 WORKDIR /twill-core
 COPY twill-core .
 
-WORKDIR /app
+WORKDIR /
 COPY twill-api/poetry.lock twill-api/pyproject.toml ./
 RUN poetry config virtualenvs.create false && poetry install --no-root
 
-COPY twill-api/app /app/app
+WORKDIR /app
+COPY twill-api/app .
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
