@@ -5,7 +5,7 @@ from app.service.authentication import get_twitter_access_token, login_user_with
 from app.service.deps import login
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
-from twill.config import twitter_api_settings
+from twill.config import logger, twitter_api_settings
 from twill.model.user import BetaAccess
 
 router = APIRouter()
@@ -59,9 +59,16 @@ async def verifier_login(
             detail="Error authenticating with Twitter",
         )
 
-    access_token, access_token_secret = await get_twitter_access_token(
-        session, oauth_verifier
-    )
+    try:
+        access_token, access_token_secret = await get_twitter_access_token(
+            session, oauth_verifier
+        )
+    except tweepy.TweepError as e:
+        logger.error(f"Error fetching access token: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Error authenticating with Twitter",
+        )
 
     # Fetch user data and login
     user = await login_user_with_twitter(session, access_token, access_token_secret)
@@ -75,7 +82,6 @@ async def verifier_login(
             detail="You do not have beta access to Twill",
         )
 
-    # TODO: Refactor into function?
     # Save user details in session
     request.session["access_token"] = access_token
     request.session["access_token_secret"] = access_token_secret

@@ -5,7 +5,7 @@ from app.model.session import LoginSession
 from app.model.user import UserSession
 from beanie.operators import Set
 from fastapi import HTTPException, status
-from twill.config import twitter_api_settings
+from twill.config import logger, twitter_api_settings
 from twill.model.user import User
 from twill.service.analytics import update_follow_count_today
 
@@ -53,14 +53,21 @@ async def login_user_with_twitter(
     )
 
     api = tweepy.API(auth)
-    tweepy_user: tweepy.User = api.verify_credentials(include_email=True)
+    try:
+        tweepy_user: tweepy.User = api.verify_credentials(include_email=True)
+    except tweepy.TweepError as e:
+        logger.error(f"Error verifying credentials: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Error authenticating with Twitter",
+        )
 
     # TODO: Handle users with no email - Get email form
     if not tweepy_user.email:
         session.clear()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Error authenticating with Twitter - Email privileges needed",
+            detail="No email associated with Twitter account",
         )
 
     # Create new user object
