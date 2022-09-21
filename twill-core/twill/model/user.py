@@ -26,3 +26,11 @@ class User(Document, TwitterCredentials):
 
 class BetaAccess(Document):
     email: Indexed(str)
+
+
+class BetaWaitlist(Document):
+    email: Indexed(str)
+
+
+class BetaSignupRequest(BaseModel):
+    email: str

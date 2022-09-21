@@ -12,6 +12,7 @@ from twill.model.twitter import Tweet, UserPublicMetrics
 
 from app.config import app_settings, setup_logging
 from app.model.user import UserSession
+from app.router.beta import router as beta_router
 from app.router.twitter_authentication import router as twitter_auth_router
 from app.service.deps import auth
 
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 app.include_router(twitter_auth_router, prefix="/twitter", tags=["twitter"])
+app.include_router(beta_router, prefix="/beta", tags=["beta"])
 
 
 @app.on_event("startup")
