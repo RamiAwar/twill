@@ -1,5 +1,15 @@
 import { defineStore } from "pinia";
 import { ClientError } from "@/models/error";
+import routes from "@/routes";
+
+function handleErrorCode(error: ClientError) {
+  switch (error.code) {
+    case 412:
+      error.meta = "Signup for beta";
+      error.link = routes.beta_signup;
+      return error;
+  }
+}
 
 export const useErrorStore = defineStore("error", {
   state() {
@@ -11,10 +21,11 @@ export const useErrorStore = defineStore("error", {
   getters: {},
   actions: {
     add(message: string, code: number = null): void {
-      const err: ClientError = { id: this.counter, message: message };
+      let err: ClientError = { id: this.counter, message: message };
 
       if (code) {
         err.code = code;
+        err = handleErrorCode(err);
       }
 
       this.errors = [...this.errors, err];

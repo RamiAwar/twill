@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
+import { resolveDirective } from 'vue';
 
 interface ErrorProps {
   // Error
@@ -11,6 +12,8 @@ interface ErrorProps {
   dismissable?: boolean;
   ephemeral?: boolean;
   timeout?: number;
+  meta?: string;
+  link?: string;
 }
 
 const props = withDefaults(defineProps<ErrorProps>(), {
@@ -47,6 +50,11 @@ onMounted(() => {
             <p class="ml-3 truncate font-medium text-white">
               <span class="md:inline">{{ message }}</span>
             </p>
+          </div>
+          <div v-if="meta" class="order-3 mt-2 w-full flex-shrink-0 sm:order-2 sm:mt-0 sm:w-auto">
+            <a :href="link"
+              class="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50">{{
+              meta }}</a>
           </div>
           <div class="order-2 flex-shrink-0 sm:order-3 sm:ml-2">
             <button type="button" @click="dismiss"

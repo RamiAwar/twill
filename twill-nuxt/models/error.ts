@@ -8,6 +8,10 @@ export interface ClientError {
   dismissable?: boolean;
   ephemeral?: boolean;
   timeout?: number;
+
+  // Optional
+  meta?: string;
+  link?: string;
 }
 
 export interface APIError {

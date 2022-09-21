@@ -83,8 +83,8 @@ async def verifier_login(
     if not beta_access:
         request.session.clear()
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="You do not have beta access to Twill",
+            status_code=status.HTTP_412_PRECONDITION_FAILED,
+            detail="You're not yet approved for beta access!",
         )
 
     # Save user details in session
