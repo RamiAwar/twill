@@ -18,10 +18,19 @@ export const useErrorStore = defineStore("error", {
       }
 
       this.errors = [...this.errors, err];
-      this.counter += 1;
+      this.counter = this.counter + 1;
     },
     remove(id): void {
       this.errors = this.errors.filter((error) => error.id !== id);
     },
+    handleErrors(res) {
+      if (res.error?.value) {
+        this.add("Something went wrong! Please try again later.", 500);
+      } else if (res.data.value?.error) {
+        const error = res.data.value.error;
+        this.add(error.message, error.code);
+      }
+    },
   },
+  persist: true,
 });

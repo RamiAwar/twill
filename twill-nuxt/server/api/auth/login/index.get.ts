@@ -7,8 +7,8 @@ export default defineEventHandler(async (event) => {
   let session_id = getCookie(event, "session_id") || null;
 
   // Fetch login twitter redirect URL
-  const { body, cookies } = await get(routes.twitter_login, session_id);
+  const { body, cookies, error } = await get(routes.twitter_login, session_id);
 
   // Return response with cookie headers
-  return useResponse(event, body, cookies);
+  return useResponse(event, body, cookies, error);
 });

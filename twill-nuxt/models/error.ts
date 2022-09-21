@@ -9,3 +9,8 @@ export interface ClientError {
   ephemeral?: boolean;
   timeout?: number;
 }
+
+export interface APIError {
+  message: string;
+  code?: number;
+}

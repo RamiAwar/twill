@@ -1,27 +1,36 @@
 <script setup lang="ts">
 import { UserAuthResponse } from '@/models/auth';
 import { useUserStore } from '@/stores/user';
+import { useErrorStore } from '@/stores/error';
+import { APIResponse } from '@/models/api';
+
 
 // Get route params, base is just a dummy base here
 const route = useRoute()
 const url = new URL(route.fullPath, "http://whatever");
 const suffix = url.search;
+const path = '/api/auth/oauth' + suffix;
 
-const res = await useFetch<UserAuthResponse>('/api/auth/oauth' + suffix,
+// Make request server side, handle errors on mount
+const res = await useFetch<APIResponse<UserAuthResponse>>(path,
   {
-    headers: useRequestHeaders(['cookie'])
-  }
-);
+    headers: useRequestHeaders(['cookie']),
+  },
+)
 
-// Store in user store
-const userStore = useUserStore();
-if (res.data.value) {
-  userStore.$patch({ ...res.data.value })
-  navigateTo("/")
-} else {
-  // TODO: Push error here and clear cookies
-  navigateTo("/");
-}
+onMounted(() => {
+  const errorStore = useErrorStore()
+  errorStore.handleErrors(res);
+
+  // Store in user store
+  const userStore = useUserStore();
+  if (res.data.value && !res.data.value.error) {
+    userStore.$patch({ ...res.data.value.body })
+    return navigateTo("/");
+  } else {
+    return navigateTo("/");
+  }
+})
 
 
 
