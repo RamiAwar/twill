@@ -32,7 +32,12 @@ def get_twitter_oauth_handler_user(session: UserSession):
 async def twitter(request: Request):
     """Returns twitter redirect url for authentication"""
     oauth1_user_handler = get_twitter_oauth_handler()
-    url = oauth1_user_handler.get_authorization_url(signin_with_twitter=True)
+
+    try:
+        url = oauth1_user_handler.get_authorization_url(signin_with_twitter=True)
+    except tweepy.TweepyException as e:
+        logger.error(f"Error getting authorization url: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # Save request token to session for verification
     oauth_token = url.split("=")[1]

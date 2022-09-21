@@ -10,10 +10,12 @@ from twill.config import logger, twitter_api_settings
 from twill.database.mongo import initialize_beanie
 from twill.model.twitter import Tweet, UserPublicMetrics
 
-from app.config import app_settings
+from app.config import app_settings, setup_logging
 from app.model.user import UserSession
 from app.router.twitter_authentication import router as twitter_auth_router
 from app.service.deps import auth
+
+setup_logging()
 
 sentry_sdk.init(
     dsn="https://709b566d47ee4311ada4f6340088897a@o1359248.ingest.sentry.io/6646638",
