@@ -10,6 +10,10 @@ class BannerType(str, Enum):
     info = "info"
 
 
-class BannerResponse(BaseModel):
+class Banner(BaseModel):
     message: str
     type: BannerType = Field(default=BannerType.info)
+
+
+class BannerResponse(BaseModel):
+    banner: Banner
