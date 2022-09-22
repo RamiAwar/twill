@@ -2,7 +2,7 @@ import axios from "axios";
 import cookieParser from "set-cookie-parser";
 
 const { API_URL } = useRuntimeConfig();
-import { APIError } from "@/models/error";
+import { APIError } from "@/models/api";
 
 interface APIResponse {
   body: any;
@@ -54,6 +54,7 @@ async function send(method: string, path: string, data: any, session_id: string)
         // that falls out of the range of 2xx
         const message = error.response.data.detail;
         const code = error.response.status;
+        console.log(`API response error from ${API_URL}${path}: ${JSON.stringify(error.response.data.detail)}`);
         return { body: {}, cookies: new Map(), error: { message, code } };
       } else if (error.request) {
         // The request was made but no response was received
