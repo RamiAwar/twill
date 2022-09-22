@@ -18,7 +18,7 @@ interface BannerProps {
 const props = withDefaults(defineProps<BannerProps>(), {
   dismissable: true,
   ephemeral: true,
-  timeout: 5000,
+  timeout: 20000,
 })
 
 const emit = defineEmits(['close'])

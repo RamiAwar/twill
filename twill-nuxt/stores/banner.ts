@@ -7,6 +7,8 @@ function handleErrorCode(error: Banner) {
     case 412:
       error.meta = "Signup for beta";
       error.link = routes.beta_signup;
+      error.type = BannerType.Info;
+      error.ephemeral = false;
       return error;
     case 422:
       error.message = "Something went wrong! Please try again later.";
