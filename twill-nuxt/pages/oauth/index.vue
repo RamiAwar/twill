@@ -32,16 +32,15 @@ onMounted(() => {
   }
 })
 
-
-
 </script>
 
 <template>
-  <div class="min-h-full bg-white px-4 py-16 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8 flex items-center">
-    <div class="mx-auto mh-auto max-w-max">
-      <main class="sm:flex text-center">
-        Loading...
-      </main>
-    </div>
+  <div class="flex items-center justify-center w-full h-full">
+    <span class="flex justify-center items-center">
+      <span class="animate-ping absolute inline-flex h-14 w-14 rounded-full bg-sky-400 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-12 w-12 bg-gradient-to-b from-cyan-400 to-blue-400">
+      </span>
+    </span>
   </div>
+
 </template>
