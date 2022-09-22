@@ -8,6 +8,9 @@ function handleErrorCode(error: Banner) {
       error.meta = "Signup for beta";
       error.link = routes.beta_signup;
       return error;
+    case 422:
+      error.message = "Something went wrong! Please try again later.";
+      return error;
     default:
       return error;
   }
@@ -50,7 +53,6 @@ export const useBannerStore = defineStore("banner", {
         const error = res.data.value.error;
         this.addError(error.message, error.code);
       } else if (res.data.value.body.banner) {
-        console.log("received banner from api");
         this._addBanner(res.data.value.body.banner);
       }
     },

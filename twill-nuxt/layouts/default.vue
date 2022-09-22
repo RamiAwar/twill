@@ -1,6 +1,6 @@
 <template>
   <div class="h-full w-full">
-    <ErrorHandler></ErrorHandler>
+    <BannerHandler></BannerHandler>
     <slot></slot>
   </div>
 </template>

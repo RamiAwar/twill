@@ -18,6 +18,7 @@ const { banners } = storeToRefs(bannerStore)
 
 const BannerError = resolveComponent("BannerError")
 const BannerInfo = resolveComponent("BannerInfo")
+const BannerSuccess = resolveComponent("BannerSuccess")
 
 function getBanner(type: BannerType) {
   switch (type) {
@@ -25,6 +26,8 @@ function getBanner(type: BannerType) {
       return BannerError
     case BannerType.Info:
       return BannerInfo
+    case BannerType.Success:
+      return BannerSuccess
     default:
       return BannerError
   }
