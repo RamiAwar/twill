@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { UserAuthResponse } from '@/models/auth';
 import { useUserStore } from '@/stores/user';
-import { useErrorStore } from '@/stores/error';
+import { useBannerStore } from '@/stores/banner';
 import { APIResponse } from '@/models/api';
 
 
@@ -19,8 +19,8 @@ const res = await useFetch<APIResponse<UserAuthResponse>>(path,
 )
 
 onMounted(() => {
-  const errorStore = useErrorStore()
-  errorStore.handleErrors(res);
+  const bannerStore = useBannerStore()
+  bannerStore.handleBanners(res);
 
   // Store in user store
   const userStore = useUserStore();

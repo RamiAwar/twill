@@ -2,21 +2,21 @@
 import { LockClosedIcon } from '@heroicons/vue/20/solid/index.js'
 import { LoginRedirect } from '@/models/auth';
 import { useUserStore } from '@/stores/user';
-import { useErrorStore } from '@/stores/error';
+import { useBannerStore } from '@/stores/banner';
 
-const errorStore = useErrorStore()
+const bannerStore = useBannerStore()
 const userStore = useUserStore();
 
 // Get login redirect
 const loginRedirect = async () => {
   const res = await useFetch('/api/auth/login');
-  errorStore.handleErrors(res)
+  bannerStore.handleBanners(res)
   return navigateTo(res.data.value.body.redirect_url, { external: true });
 }
 
 const logout = async () => {
   const res = await useFetch('/api/auth/logout');
-  errorStore.handleErrors(res);
+  bannerStore.handleBanners(res);
   userStore.logout();
   return navigateTo("/");
 }

@@ -1,20 +1,41 @@
 <script setup lang="ts">
-import { useErrorStore } from '@/stores/error'
+import { useBannerStore } from '@/stores/banner'
+
 import { storeToRefs } from 'pinia'
 
+// This code needs to be duplicated as vue3 components are compiled in isolation
+enum BannerType {
+  Error = 'error',
+  Warning = 'warning',
+  Info = 'info',
+  Success = 'success',
+}
+
 // Subscribe to error store and display errors
-const errorStore = useErrorStore()
-const { errors } = storeToRefs(errorStore)
+const bannerStore = useBannerStore()
+const { banners } = storeToRefs(bannerStore)
+
+
+const BannerError = resolveComponent("BannerError")
+const BannerInfo = resolveComponent("BannerInfo")
+
+function getBanner(type: BannerType) {
+  switch (type) {
+    case BannerType.Error:
+      return BannerError
+    case BannerType.Info:
+      return BannerInfo
+    default:
+      return BannerError
+  }
+}
 
 </script>
 
 <template>
   <div class="absolute top-0 w-full">
-    <ErrorBanner v-for="error in errors" v-bind="error" @close="errorStore.remove(error.id)" :key="error.id">
-    </ErrorBanner>
-
-    <!-- <ErrorBanner message="You don't have beta access yet!" meta="Sign up here" link="/beta/signup"
-      :id="parseInt('999')"> -->
-    <!-- </ErrorBanner> -->
+    <component v-for="banner in banners" v-bind:is="getBanner(banner.type)" v-bind="banner"
+      @close="bannerStore.remove(banner.id)" :key="banner.id">
+    </component>
   </div>
 </template>

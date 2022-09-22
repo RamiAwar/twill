@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ExclamationCircleIcon, XMarkIcon } from '@heroicons/vue/24/outline/index.js'
-import { resolveDirective } from 'vue';
 
-interface ErrorProps {
+interface BannerProps {
   // Error
   message: string;
   id: number;
@@ -16,7 +15,7 @@ interface ErrorProps {
   link?: string;
 }
 
-const props = withDefaults(defineProps<ErrorProps>(), {
+const props = withDefaults(defineProps<BannerProps>(), {
   dismissable: true,
   ephemeral: true,
   timeout: 5000,
@@ -37,7 +36,7 @@ onMounted(() => {
 })
 
 </script>
-
+  
 <template>
   <div class="inset-x-0 mt-2">
     <div class="sm:mx-auto max-w-7xl sm:px-2 md:px-6 lg:px-8">
@@ -52,7 +51,7 @@ onMounted(() => {
             </p>
           </div>
           <div v-if="meta" class="order-3 mt-2 w-full flex-shrink-0 sm:order-2 sm:mt-0 sm:w-auto">
-            <a :href="link"
+            <a :href="link" @click="dismiss"
               class="flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50">{{
               meta }}</a>
           </div>
@@ -68,3 +67,4 @@ onMounted(() => {
     </div>
   </div>
 </template>
+  
