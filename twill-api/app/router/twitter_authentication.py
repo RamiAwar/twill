@@ -68,7 +68,7 @@ async def verifier_login(
         access_token, access_token_secret = await get_twitter_access_token(
             session, oauth_verifier
         )
-    except tweepy.TweepError as e:
+    except tweepy.TweepyError as e:
         logger.error(f"Error fetching access token: {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
