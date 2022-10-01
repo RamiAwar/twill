@@ -1,7 +1,7 @@
 import motor
 from beanie import init_beanie
 from twill.config import mongo_settings
-from twill.model.twitter import DailyStats, FollowCount, Tweet
+from twill.model.twitter import DailyStats, FollowCount, HourlyStats, Tweet
 from twill.model.user import BetaAccess, BetaWaitlist, User
 
 
@@ -16,6 +16,7 @@ async def initialize_beanie():
             Tweet,
             FollowCount,
             DailyStats,
+            HourlyStats,
             BetaAccess,
             BetaWaitlist,
         ],

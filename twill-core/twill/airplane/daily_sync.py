@@ -8,7 +8,7 @@ from tqdm import tqdm
 from tweepy.asynchronous import AsyncClient
 from twill.config import TwitterAPISettings, logger
 from twill.database.mongo import initialize_beanie
-from twill.model.twitter import DailyStats, EngagementAggregation, FollowCount, Tweet, UserPublicMetrics
+from twill.model.twitter import DailyStats, EngagementAggregation, HourlyStats, Tweet, UserPublicMetrics
 from twill.model.user import User
 from twill.service.analytics import update_follow_count_today
 
@@ -92,19 +92,40 @@ async def calculate_stats(user_id: str):
 
     # Update last period's engagement total
     last_period_start = datetime.combine(datetime.utcnow() - timedelta(days=LAST_PERIOD_DAYS), time.min)
-    engagement_aggregation_pipeline = EngagementAggregation.get_engagement_aggregation_pipeline(last_period_start)
+    engagement_aggregation_pipeline = EngagementAggregation.get_daily_engagement_aggregation_pipeline(last_period_start)
 
     aggregations: List[EngagementAggregation] = await Tweet.aggregate(
         engagement_aggregation_pipeline, projection_model=EngagementAggregation
     ).to_list()
-
     for agg in aggregations:
         agg_dict = agg.dict(exclude={"id", "date"})
+
+        # Aggregate by day
+        # Timezone needs to be used here in the future
         day = datetime.strptime(agg.date, "%Y-%m-%d")
         stats = DailyStats(user_id=user_id, date=day, **agg_dict)
 
         # Update daily stats / insert if not exists
         await DailyStats.find_one(DailyStats.date == stats.date, DailyStats.user_id == stats.user_id,).upsert(
+            Set(agg_dict),
+            on_insert=stats,
+        )
+
+    engagement_aggregation_pipeline = EngagementAggregation.get_hourly_engagement_aggregation_pipeline(
+        last_period_start
+    )
+    aggregations: List[EngagementAggregation] = await Tweet.aggregate(
+        engagement_aggregation_pipeline, projection_model=EngagementAggregation
+    ).to_list()
+    for agg in aggregations:
+        agg_dict = agg.dict(exclude={"id", "date"})
+
+        # Aggregate by hour (timing analysis)
+        # Not sure how accurate this is since it doesn't take into account retweets
+        # Timezone might need to be introduced here in the future
+        hour = datetime.strptime(agg.date, "%Y-%m-%d %H")
+        stats = HourlyStats(user_id=user_id, date=hour, **agg_dict)
+        await HourlyStats.find_one(HourlyStats.date == stats.date, HourlyStats.user_id == stats.user_id,).upsert(
             Set(agg_dict),
             on_insert=stats,
         )

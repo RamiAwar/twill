@@ -16,10 +16,10 @@ async def session(request: Request):
     return session
 
 
-async def login(session=Depends(session)) -> Optional[LoginSession]:
+async def login(session=Depends(session)) -> Optional[dict]:
     """This dep is used throughout the login flow"""
     try:
-        session = LoginSession(**session)
+        LoginSession(**session)
     except ValidationError as e:
         # Session missing necessary details, sign user out and raise unauthorized error
         logger.error(f"error creating LoginSession from session object: {e}")
@@ -29,10 +29,10 @@ async def login(session=Depends(session)) -> Optional[LoginSession]:
     return session
 
 
-async def auth(session=Depends(session)) -> Optional[UserSession]:
+async def auth(session=Depends(session)) -> Optional[dict]:
     """This dep is used for all authenticated routes after login"""
     try:
-        session = UserSession(**session)
+        UserSession(**session)
     except ValidationError as e:
         # Session missing necessary details, sign user out and raise unauthorized error
         logger.error(f"error creating UserSession from session object: {e}")
